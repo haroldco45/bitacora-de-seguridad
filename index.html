@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="es-CO">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bitácora de Seguridad — Colinas del Portal</title>
+<meta name="description" content="Registro comunitario de incidentes de seguridad del barrio Colinas del Portal, Caucasia. Captura rápida, mapa de horas críticas e informe imprimible para la Policía Nacional.">
+<meta name="theme-color" content="#14202B">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Bitácora Barrio">
+
+<!-- ===== Open Graph / Twitter (bloque completo) ===== -->
+<meta property="og:title" content="Bitácora de Seguridad — Colinas del Portal">
+<meta property="og:description" content="Registro comunitario de incidentes: captura rápida, mapa de horas críticas e informe imprimible para la Policía Nacional. Caucasia, Antioquia.">
+<meta property="og:image" content="https://haroldco45.github.io/bitacora-seguridad-colinas/og-image.png">
+<meta property="og:url" content="https://haroldco45.github.io/bitacora-seguridad-colinas/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Vibras Positivas HM">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Bitácora de Seguridad — Colinas del Portal">
+<meta name="twitter:image" content="https://haroldco45.github.io/bitacora-seguridad-colinas/og-image.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;800&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --tinta:#14202B;
+  --tinta-70:rgba(20,32,43,.70);
+  --tinta-45:rgba(20,32,43,.45);
+  --papel:#E4E6E0;
+  --hoja:#F4F5F1;
+  --linea:#C3C6BD;
+  --sello:#6B2D8C;
+  --sello-10:rgba(107,45,140,.10);
+  --verde:#4A6B3F;
+  --ambar:#A85B12;
+  --r:3px;
+  --f-tit:"Archivo",system-ui,sans-serif;
+  --f-txt:"IBM Plex Sans",system-ui,sans-serif;
+  --f-dat:"IBM Plex Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--papel);
+  color:var(--tinta);
+  font-family:var(--f-txt);
+  font-size:15.5px;line-height:1.5;
+  -webkit-text-size-adjust:100%;
+  padding-bottom:88px;
+}
+.wrap{max-width:920px;margin:0 auto;padding:0 14px}
+
+/* ---------- Membrete ---------- */
+.membrete{
+  background:var(--tinta);color:var(--hoja);
+  padding:16px 0 14px;border-bottom:4px solid var(--sello);
+}
+.membrete .wrap{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.mrk{font-family:var(--f-dat);font-size:10px;letter-spacing:.18em;text-transform:uppercase;opacity:.62}
+.membrete h1{
+  font-family:var(--f-tit);font-weight:800;font-size:25px;line-height:1.02;
+  margin:5px 0 0;letter-spacing:-.02em;
+}
+.membrete h1 span{display:block;font-size:14px;font-weight:600;letter-spacing:.02em;opacity:.72;margin-top:4px}
+.reloj{font-family:var(--f-dat);font-size:12px;text-align:right;line-height:1.35;opacity:.85}
+.reloj b{display:block;font-size:17px;font-weight:600;letter-spacing:.03em}
+
+/* ---------- Pestañas ---------- */
+.pestanas{background:var(--tinta);position:sticky;top:0;z-index:40;box-shadow:0 1px 0 var(--sello)}
+.pestanas .wrap{display:flex;gap:0;overflow-x:auto;scrollbar-width:none}
+.pestanas .wrap::-webkit-scrollbar{display:none}
+.pes{
+  flex:1 0 auto;background:none;border:0;border-bottom:3px solid transparent;
+  color:rgba(244,245,241,.55);font-family:var(--f-tit);font-weight:600;font-size:12.5px;
+  letter-spacing:.09em;text-transform:uppercase;padding:12px 14px;cursor:pointer;white-space:nowrap;
+}
+.pes[aria-selected="true"]{color:var(--hoja);border-bottom-color:var(--sello)}
+.pes:focus-visible{outline:2px solid var(--hoja);outline-offset:-3px}
+
+/* ---------- Bloques ---------- */
+.vista{display:none;padding-top:18px}
+.vista.on{display:block}
+.hoja{background:var(--hoja);border:1px solid var(--linea);border-radius:var(--r);padding:16px;margin-bottom:14px}
+.rot{
+  font-family:var(--f-dat);font-size:10px;letter-spacing:.17em;text-transform:uppercase;
+  color:var(--tinta-45);margin:0 0 10px;display:flex;align-items:center;gap:8px;
+}
+.rot::after{content:"";flex:1;height:1px;background:var(--linea)}
+h2.tit{font-family:var(--f-tit);font-weight:800;font-size:19px;margin:0 0 3px;letter-spacing:-.01em}
+.sub{color:var(--tinta-70);font-size:13.5px;margin:0 0 14px}
+
+/* ---------- Formulario ---------- */
+.campo{margin-bottom:13px}
+.campo>label,.leyenda{
+  display:block;font-family:var(--f-dat);font-size:10.5px;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--tinta-70);margin-bottom:5px;font-weight:600;
+}
+input[type=text],input[type=tel],input[type=number],input[type=datetime-local],
+input[type=password],input[type=search],select,textarea{
+  width:100%;font-family:var(--f-txt);font-size:16px;color:var(--tinta);
+  background:#fff;border:1px solid var(--linea);border-radius:var(--r);padding:11px 12px;
+}
+textarea{resize:vertical;min-height:74px;line-height:1.45}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--sello);outline-offset:1px;border-color:var(--sello)}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+@media(max-width:520px){.duo{grid-template-columns:1fr}}
+
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{
+  border:1px solid var(--linea);background:#fff;border-radius:999px;padding:8px 13px;
+  font-family:var(--f-txt);font-size:13.5px;cursor:pointer;color:var(--tinta-70);
+}
+.chip[aria-pressed="true"]{background:var(--tinta);border-color:var(--tinta);color:var(--hoja)}
+.chip:focus-visible{outline:2px solid var(--sello);outline-offset:2px}
+
+.reservado{border-left:3px solid var(--sello);background:var(--sello-10);padding:13px;border-radius:0 var(--r) var(--r) 0;margin-bottom:13px}
+.reservado .aviso{font-size:12.5px;color:var(--tinta-70);margin:0 0 11px;line-height:1.45}
+
+/* ---------- Botones ---------- */
+.btn{
+  font-family:var(--f-tit);font-weight:600;font-size:13px;letter-spacing:.07em;text-transform:uppercase;
+  border:1px solid var(--tinta);background:var(--tinta);color:var(--hoja);
+  padding:12px 18px;border-radius:var(--r);cursor:pointer;
+}
+.btn.sec{background:transparent;color:var(--tinta)}
+.btn.sello{background:var(--sello);border-color:var(--sello)}
+.btn.mini{padding:7px 11px;font-size:11px}
+.btn:focus-visible{outline:2px solid var(--sello);outline-offset:2px}
+.btn:disabled{opacity:.42;cursor:not-allowed}
+.fila-btn{display:flex;gap:9px;flex-wrap:wrap}
+
+.barra{
+  position:fixed;left:0;right:0;bottom:0;z-index:50;background:var(--hoja);
+  border-top:1px solid var(--linea);padding:11px 14px calc(11px + env(safe-area-inset-bottom));
+}
+.barra .wrap{padding:0;display:flex;gap:9px}
+.barra .btn{flex:1}
+
+/* ---------- Indicadores ---------- */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+@media(max-width:620px){.kpis{grid-template-columns:1fr 1fr}}
+.kpi{background:var(--hoja);border:1px solid var(--linea);border-radius:var(--r);padding:12px}
+.kpi .n{font-family:var(--f-dat);font-weight:600;font-size:26px;line-height:1;letter-spacing:-.02em}
+.kpi .l{font-size:11.5px;color:var(--tinta-70);margin-top:5px;line-height:1.3}
+.kpi.alerta .n{color:var(--sello)}
+
+/* ---------- Rejilla de calor (elemento distintivo) ---------- */
+.rejilla{overflow-x:auto;padding-bottom:4px}
+.rejilla table{border-collapse:separate;border-spacing:2px;font-family:var(--f-dat);font-size:9px}
+.rejilla th{font-weight:400;color:var(--tinta-45);padding:0 3px;text-align:center;letter-spacing:.04em}
+.rejilla th.dia{text-align:right;padding-right:6px;text-transform:uppercase;font-size:9.5px}
+.celda{width:15px;height:15px;border-radius:1px;background:#fff;border:1px solid var(--linea);padding:0}
+.celda[data-n]{border-color:transparent}
+.celda.pico{box-shadow:0 0 0 2px var(--ambar)}
+.escala{display:flex;align-items:center;gap:6px;margin-top:11px;font-family:var(--f-dat);font-size:9.5px;color:var(--tinta-45);letter-spacing:.08em;text-transform:uppercase}
+.escala i{width:15px;height:11px;border-radius:1px;display:inline-block;border:1px solid var(--linea)}
+.hallazgo{
+  margin-top:14px;border-top:1px solid var(--linea);padding-top:13px;
+  font-size:14.5px;line-height:1.5;
+}
+.hallazgo b{color:var(--sello)}
+
+.rank{list-style:none;margin:0;padding:0}
+.rank li{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--linea)}
+.rank li:last-child{border-bottom:0}
+.rank .pos{font-family:var(--f-dat);font-size:11px;color:var(--tinta-45);width:20px;flex:0 0 20px}
+.rank .nom{flex:1;font-size:14px}
+.rank .bar{flex:0 0 84px;height:7px;background:var(--linea);border-radius:99px;overflow:hidden}
+.rank .bar i{display:block;height:100%;background:var(--sello)}
+.rank .val{font-family:var(--f-dat);font-size:12.5px;width:26px;text-align:right}
+
+/* ---------- Bitácora ---------- */
+.reg{background:var(--hoja);border:1px solid var(--linea);border-left:3px solid var(--linea);border-radius:var(--r);padding:13px;margin-bottom:10px}
+.reg.sin{border-left-color:var(--ambar)}
+.reg.den{border-left-color:var(--verde)}
+.reg .cab{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:7px}
+.reg .cuando{font-family:var(--f-dat);font-size:11.5px;color:var(--tinta-70);letter-spacing:.03em}
+.reg .modo{font-family:var(--f-tit);font-weight:600;font-size:15px;margin:1px 0 0}
+.reg .donde{font-size:13.5px;color:var(--tinta-70);margin:2px 0 0}
+.reg .desc{font-size:14px;margin:8px 0 0;line-height:1.45}
+.reg .pie{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap}
+.reg .dato{font-family:var(--f-dat);font-size:11.5px;color:var(--tinta-70)}
+.estampa{
+  font-family:var(--f-dat);font-weight:600;font-size:10px;letter-spacing:.13em;text-transform:uppercase;
+  border:1.5px dashed var(--verde);color:var(--verde);padding:4px 9px;border-radius:2px;
+  display:inline-block;transform:rotate(-1.4deg);
+}
+.estampa.falta{border-color:var(--ambar);color:var(--ambar);border-style:solid;opacity:.75}
+.vacio{text-align:center;padding:34px 16px;color:var(--tinta-70)}
+.vacio p{margin:0 0 14px;font-size:14.5px}
+
+.filtros{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:13px}
+.filtros .ancho{grid-column:1/-1}
+
+/* ---------- Informe ---------- */
+.informe{background:#fff;border:1px solid var(--linea);border-radius:var(--r);padding:20px}
+.informe h3{font-family:var(--f-tit);font-weight:800;font-size:17px;margin:20px 0 8px}
+.informe h3:first-child{margin-top:0}
+.informe table.datos{width:100%;border-collapse:collapse;font-size:13px;margin-top:6px}
+.informe table.datos th,.informe table.datos td{border:1px solid var(--linea);padding:6px 8px;text-align:left;vertical-align:top}
+.informe table.datos th{background:var(--papel);font-family:var(--f-dat);font-size:10px;letter-spacing:.09em;text-transform:uppercase;font-weight:600}
+.informe .firma{margin-top:34px;border-top:1px solid var(--tinta);width:230px;padding-top:5px;font-size:12.5px}
+
+/* ---------- Varios ---------- */
+.nota{font-size:12.5px;color:var(--tinta-70);line-height:1.45}
+.aviso-legal{background:var(--tinta);color:rgba(244,245,241,.82);border-radius:var(--r);padding:14px;font-size:12.5px;line-height:1.5}
+.aviso-legal b{color:var(--hoja)}
+.toast{
+  position:fixed;left:50%;bottom:96px;transform:translateX(-50%) translateY(12px);
+  background:var(--tinta);color:var(--hoja);padding:11px 18px;border-radius:99px;
+  font-size:13.5px;z-index:90;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;
+  max-width:88vw;text-align:center;
+}
+.toast.ver{opacity:1;transform:translateX(-50%) translateY(0)}
+.pie-marca{text-align:center;padding:26px 14px 10px;font-family:var(--f-dat);font-size:11px;color:var(--tinta-45);letter-spacing:.05em;line-height:1.7}
+.pie-marca b{color:var(--tinta-70);font-weight:600}
+
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+@media print{
+  body{background:#fff;padding:0}
+  .membrete,.pestanas,.barra,.no-print,.toast{display:none!important}
+  .vista{display:none!important}
+  .vista.on{display:block!important;padding:0}
+  .informe{border:0;padding:0}
+  .wrap{max-width:100%;padding:0}
+  .hoja{border:0;padding:0}
+  .celda{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+
+<header class="membrete">
+  <div class="wrap">
+    <div>
+      <div class="mrk">Caucasia · Antioquia · Bajo Cauca</div>
+      <h1>Bitácora de Seguridad<span>Barrio Colinas del Portal</span></h1>
+    </div>
+    <div class="reloj" id="reloj"><b>--:--</b><span id="fechaHoy">—</span></div>
+  </div>
+</header>
+
+<nav class="pestanas" role="tablist" aria-label="Secciones">
+  <div class="wrap">
+    <button class="pes" role="tab" aria-selected="true" data-v="registrar">Registrar</button>
+    <button class="pes" role="tab" aria-selected="false" data-v="bitacora">Bitácora</button>
+    <button class="pes" role="tab" aria-selected="false" data-v="analisis">Análisis</button>
+    <button class="pes" role="tab" aria-selected="false" data-v="informe">Informe</button>
+    <button class="pes" role="tab" aria-selected="false" data-v="ajustes">Ajustes</button>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<!-- ============ REGISTRAR ============ -->
+<section class="vista on" id="v-registrar">
+  <div class="hoja">
+    <p class="rot">Acta de incidente</p>
+    <h2 class="tit">Cuente qué pasó</h2>
+    <p class="sub">Toma menos de un minuto. Entre más exacta la hora y el punto, más sirve para pedir patrullaje.</p>
+
+    <div class="campo">
+      <label for="f-fecha">Fecha y hora del hecho</label>
+      <input type="datetime-local" id="f-fecha">
+    </div>
+
+    <div class="campo">
+      <span class="leyenda">Modalidad</span>
+      <div class="chips" id="f-modalidad" role="group" aria-label="Modalidad"></div>
+    </div>
+
+    <div class="campo">
+      <label for="f-punto">Punto exacto</label>
+      <input type="text" id="f-punto" list="puntos" placeholder="Ej.: Calle 32 con Carrera 18, frente a la tienda" autocomplete="off">
+      <datalist id="puntos"></datalist>
+    </div>
+
+    <div class="campo">
+      <label for="f-desc">Qué ocurrió</label>
+      <textarea id="f-desc" placeholder="Dos hombres en moto, el parrillero se bajó y le quitó el celular a una señora. Salieron hacia la vía principal."></textarea>
+    </div>
+
+    <div class="duo">
+      <div class="campo">
+        <label for="f-elementos">Qué se llevaron</label>
+        <input type="text" id="f-elementos" placeholder="Celular, bicicleta, herramienta…">
+      </div>
+      <div class="campo">
+        <label for="f-valor">Valor aproximado (COP)</label>
+        <input type="number" id="f-valor" inputmode="numeric" min="0" step="1000" placeholder="0">
+      </div>
+    </div>
+
+    <div class="campo">
+      <span class="leyenda">Circunstancias</span>
+      <div class="chips" id="f-circ" role="group" aria-label="Circunstancias"></div>
+    </div>
+
+    <div class="campo">
+      <span class="leyenda">¿Se puso denuncia formal?</span>
+      <div class="chips" id="f-denuncia" role="group" aria-label="Denuncia"></div>
+    </div>
+
+    <div class="campo" id="caja-radicado" hidden>
+      <label for="f-radicado">Número de radicado</label>
+      <input type="text" id="f-radicado" placeholder="Ej.: 05154610012026…">
+      <p class="nota" style="margin-top:6px">Sin radicado el caso no entra a la estadística del cuadrante. Si aún no denuncia, hágalo en <b>adenunciar.policia.gov.co</b> o en el CAI y vuelva a editar el registro.</p>
+    </div>
+
+    <div class="reservado">
+      <p class="rot" style="margin-bottom:8px">Reservado · solo administrador</p>
+      <p class="aviso">Estos datos quedan ocultos para el resto de vecinos y solo se usan para confirmar el hecho. Tratamiento conforme a la <b>Ley 1581 de 2012</b> (Habeas Data). Puede dejarlos en blanco y el reporte sigue siendo válido.</p>
+      <div class="duo">
+        <div class="campo" style="margin-bottom:0">
+          <label for="f-nombre">Quién reporta</label>
+          <input type="text" id="f-nombre" autocomplete="off" placeholder="Opcional">
+        </div>
+        <div class="campo" style="margin-bottom:0">
+          <label for="f-tel">Teléfono de contacto</label>
+          <input type="tel" id="f-tel" autocomplete="off" placeholder="Opcional">
+        </div>
+      </div>
+      <label style="display:flex;gap:9px;align-items:flex-start;margin-top:12px;font-size:12.5px;line-height:1.45;text-transform:none;letter-spacing:0;font-family:var(--f-txt);color:var(--tinta-70)">
+        <input type="checkbox" id="f-consent" style="width:auto;margin-top:2px;flex:0 0 auto">
+        <span>Autorizo el tratamiento de estos datos para fines exclusivos de seguridad del barrio.</span>
+      </label>
+    </div>
+
+    <div class="fila-btn">
+      <button class="btn sec mini" id="btn-gps" type="button">Adjuntar ubicación GPS</button>
+      <span class="dato" id="gps-txt" style="align-self:center;font-family:var(--f-dat);font-size:11.5px;color:var(--tinta-45)"></span>
+    </div>
+  </div>
+
+  <div class="aviso-legal">
+    <b>Tres reglas de esta bitácora.</b> No se publican fotos ni nombres de sospechosos: eso expone a demanda por injuria y viola el Habeas Data. No se convoca a hacer justicia por mano propia. No se organiza gente armada. Esto es un instrumento para exigir presencia institucional, nada más.
+  </div>
+
+  <p class="pie-marca">Desarrollada por <b>Vibras Positivas HM</b> — Derechos de Autor Reservados</p>
+</section>
+
+<!-- ============ BITÁCORA ============ -->
+<section class="vista" id="v-bitacora">
+  <div class="hoja">
+    <p class="rot">Registro histórico</p>
+    <div class="filtros">
+      <input class="ancho" type="search" id="q-texto" placeholder="Buscar por punto, descripción o elemento…">
+      <select id="q-modo"><option value="">Toda modalidad</option></select>
+      <select id="q-den">
+        <option value="">Denunciados y no denunciados</option>
+        <option value="si">Solo con radicado</option>
+        <option value="no">Solo sin denuncia</option>
+      </select>
+    </div>
+    <p class="dato" id="conteo-filtro" style="font-family:var(--f-dat);font-size:11.5px;color:var(--tinta-45)"></p>
+  </div>
+  <div id="lista"></div>
+</section>
+
+<!-- ============ ANÁLISIS ============ -->
+<section class="vista" id="v-analisis">
+  <div class="kpis" style="margin-bottom:14px">
+    <div class="kpi"><div class="n" id="k-total">0</div><div class="l">Incidentes registrados</div></div>
+    <div class="kpi"><div class="n" id="k-30">0</div><div class="l">Últimos 30 días</div></div>
+    <div class="kpi alerta"><div class="n" id="k-sin">0%</div><div class="l">Sin denuncia formal</div></div>
+    <div class="kpi"><div class="n" id="k-valor">$0</div><div class="l">Pérdida acumulada</div></div>
+  </div>
+
+  <div class="hoja">
+    <p class="rot">El reloj del barrio</p>
+    <h2 class="tit">Cuándo nos están robando</h2>
+    <p class="sub">Cada casilla es una hora de un día de la semana. Entre más oscura, más hechos se han registrado ahí.</p>
+    <div class="rejilla" id="rejilla"></div>
+    <div class="escala">
+      <span>Menos</span>
+      <i style="background:#fff"></i><i style="background:rgba(107,45,140,.22)"></i><i style="background:rgba(107,45,140,.45)"></i><i style="background:rgba(107,45,140,.7)"></i><i style="background:#6B2D8C"></i>
+      <span>Más</span>
+    </div>
+    <div class="hallazgo" id="hallazgo">Aún no hay datos suficientes para identificar un patrón.</div>
+  </div>
+
+  <div class="hoja">
+    <p class="rot">Concentración</p>
+    <h2 class="tit">Puntos críticos</h2>
+    <p class="sub">Aquí es donde vale la pena poner luz y cámara. En el resto del barrio, no.</p>
+    <ul class="rank" id="rank-puntos"></ul>
+  </div>
+
+  <div class="hoja">
+    <p class="rot">Perfil del hecho</p>
+    <h2 class="tit">Modalidades</h2>
+    <ul class="rank" id="rank-modos"></ul>
+  </div>
+</section>
+
+<!-- ============ INFORME ============ -->
+<section class="vista" id="v-informe">
+  <div class="hoja no-print">
+    <p class="rot">Documento oficial</p>
+    <h2 class="tit">Informe para la Policía Nacional</h2>
+    <p class="sub">Genere el PDF y llévelo impreso a la mesa con la Estación de Caucasia. Un radicado con cifras se atiende; una queja verbal no.</p>
+    <div class="duo">
+      <div class="campo">
+        <label for="i-desde">Desde</label>
+        <input type="datetime-local" id="i-desde">
+      </div>
+      <div class="campo">
+        <label for="i-hasta">Hasta</label>
+        <input type="datetime-local" id="i-hasta">
+      </div>
+    </div>
+    <div class="campo">
+      <label for="i-firma">Quién presenta el informe</label>
+      <input type="text" id="i-firma" placeholder="Nombre y cargo (ej.: Presidente Comité de Convivencia)">
+    </div>
+    <label style="display:flex;gap:9px;align-items:flex-start;font-size:12.5px;line-height:1.45;color:var(--tinta-70);margin-bottom:14px">
+      <input type="checkbox" id="i-sensible" style="width:auto;margin-top:2px;flex:0 0 auto" disabled>
+      <span>Incluir datos de contacto de quienes reportaron <b>(requiere clave de administrador)</b></span>
+    </label>
+    <div class="fila-btn">
+      <button class="btn" id="btn-armar" type="button">Armar informe</button>
+      <button class="btn sello" id="btn-pdf" type="button">Guardar como PDF</button>
+    </div>
+  </div>
+  <div class="informe" id="salida-informe" hidden></div>
+</section>
+
+<!-- ============ AJUSTES ============ -->
+<section class="vista" id="v-ajustes">
+  <div class="hoja">
+    <p class="rot">Control de acceso</p>
+    <h2 class="tit">Administrador</h2>
+    <p class="sub" id="estado-admin">Modo vecino. Los datos de contacto aparecen enmascarados.</p>
+    <div id="caja-login">
+      <div class="campo"><label for="a-pin">Clave</label><input type="password" id="a-pin" inputmode="numeric" autocomplete="off"></div>
+      <button class="btn" id="btn-entrar" type="button">Entrar como administrador</button>
+    </div>
+    <div id="caja-admin" hidden>
+      <div class="fila-btn" style="margin-bottom:14px">
+        <button class="btn sec" id="btn-salir" type="button">Salir del modo administrador</button>
+      </div>
+      <div class="campo"><label for="a-nuevo">Cambiar clave</label><input type="password" id="a-nuevo" inputmode="numeric" autocomplete="off" placeholder="Nueva clave"></div>
+      <button class="btn sec mini" id="btn-cambiar" type="button">Guardar clave</button>
+    </div>
+  </div>
+
+  <div class="hoja">
+    <p class="rot">Respaldo</p>
+    <h2 class="tit">Copia de los datos</h2>
+    <p class="sub">La información vive únicamente en este teléfono. Si lo formatea o borra el navegador, se pierde. Descargue la copia cada semana.</p>
+    <div class="fila-btn">
+      <button class="btn sec" id="btn-json" type="button">Descargar respaldo</button>
+      <button class="btn sec" id="btn-csv" type="button">Descargar CSV</button>
+      <button class="btn sec" id="btn-cargar" type="button">Restaurar respaldo</button>
+    </div>
+    <input type="file" id="file-json" accept="application/json" hidden>
+    <p class="nota" style="margin-top:12px">La descarga incluye datos personales. Guárdela en un lugar seguro y no la reenvíe por grupos de WhatsApp.</p>
+  </div>
+
+  <div class="hoja">
+    <p class="rot">Marco legal</p>
+    <h2 class="tit">Tratamiento de datos</h2>
+    <p class="nota">
+      Esta herramienta trata datos personales bajo la <b>Ley 1581 de 2012</b> y el Decreto 1074 de 2015. Finalidad única: documentar hechos de inseguridad del barrio Colinas del Portal para gestionar presencia institucional. Los datos de contacto se almacenan localmente, se muestran enmascarados en las vistas públicas y solo el rol administrador puede verlos completos. Cualquier persona registrada puede solicitar su supresión al administrador del comité.<br><br>
+      Esta bitácora <b>no reemplaza la denuncia penal</b>. Para que un hecho cuente en la estadística del cuadrante debe radicarse ante la Policía Nacional o la Fiscalía.
+    </p>
+  </div>
+
+  <div class="hoja" style="border-color:var(--ambar)">
+    <p class="rot">Zona de riesgo</p>
+    <button class="btn sec" id="btn-borrar" type="button" style="border-color:var(--ambar);color:var(--ambar)">Borrar todos los registros</button>
+  </div>
+
+  <p class="pie-marca">Desarrollada por <b>Vibras Positivas HM</b> — Derechos de Autor Reservados<br>Bitácora de Seguridad Comunitaria · v1.0</p>
+</section>
+
+</main>
+
+<div class="barra no-print" id="barra">
+  <div class="wrap">
+    <button class="btn sec" id="btn-limpiar" type="button">Limpiar</button>
+    <button class="btn sello" id="btn-guardar" type="button">Guardar incidente</button>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+"use strict";
+
+/* ===== Almacenamiento con respaldo en memoria ===== */
+var memoria={};
+var Store={
+  get:function(k){try{var v=localStorage.getItem(k);return v===null?(k in memoria?memoria[k]:null):v}catch(e){return k in memoria?memoria[k]:null}},
+  set:function(k,v){memoria[k]=v;try{localStorage.setItem(k,v)}catch(e){}},
+  del:function(k){delete memoria[k];try{localStorage.removeItem(k)}catch(e){}}
+};
+var LLAVE="cdp_incidentes_v1", LLAVE_PIN="cdp_pin_v1";
+
+/* ===== Hora real de Colombia (UTC-5) ===== */
+function coAhora(){var d=new Date();return new Date(d.getTime()+d.getTimezoneOffset()*60000-5*3600000)}
+function p2(n){return(n<10?"0":"")+n}
+function paraInput(d){return d.getFullYear()+"-"+p2(d.getMonth()+1)+"-"+p2(d.getDate())+"T"+p2(d.getHours())+":"+p2(d.getMinutes())}
+var DIAS=["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
+var DIAS_C=["Dom","Lun","Mar","Mié","Jue","Vie","Sáb"];
+var MESES=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+function desdeInput(s){ // "YYYY-MM-DDTHH:mm" -> Date en hora local del navegador, tratada como hora Colombia
+  if(!s)return null;
+  var m=s.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/);
+  if(!m)return null;
+  return new Date(+m[1],+m[2]-1,+m[3],+m[4],+m[5]);
+}
+function fmtLargo(d){return DIAS[d.getDay()]+" "+d.getDate()+" de "+MESES[d.getMonth()]+" de "+d.getFullYear()}
+function fmtHora(d){var h=d.getHours(),ap=h<12?"a. m.":"p. m.",h12=h%12;if(h12===0)h12=12;return h12+":"+p2(d.getMinutes())+" "+ap}
+function pesos(n){return "$"+(n||0).toLocaleString("es-CO")}
+
+/* ===== Catálogos ===== */
+var MODALIDADES=["Atraco a pie","Fleteo o moto","Forcejeo de cerradura","Hurto a residencia","Hurto de motocicleta","Hurto de bicicleta","Descuido","Raponazo","Daño o vandalismo","Otro"];
+var CIRCUNSTANCIAS=["Arma de fuego","Arma blanca","Violencia física","Sin violencia","Dos o más personas","En moto","Hubo lesionado"];
+
+/* ===== Estado ===== */
+var datos=[], admin=false, sel={modalidad:"",circ:[],denuncia:null}, gps=null;
+function cargar(){try{datos=JSON.parse(Store.get(LLAVE)||"[]")}catch(e){datos=[]}if(!Array.isArray(datos))datos=[]}
+function guardar(){Store.set(LLAVE,JSON.stringify(datos))}
+function pin(){return Store.get(LLAVE_PIN)||"1234"}
+
+var $=function(s){return document.querySelector(s)}, $$=function(s){return Array.prototype.slice.call(document.querySelectorAll(s))};
+function aviso(t){var e=$("#toast");e.textContent=t;e.classList.add("ver");clearTimeout(e._t);e._t=setTimeout(function(){e.classList.remove("ver")},2600)}
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+
+/* ===== Enmascaramiento (Ley 1581) ===== */
+function mTel(t){if(!t)return"—";if(admin)return t;var s=String(t).replace(/\s/g,"");return s.length<5?"•••":s.slice(0,3)+"•".repeat(Math.max(3,s.length-6))+s.slice(-3)}
+function mNom(n){if(!n)return"—";if(admin)return n;return n.trim().split(/\s+/).map(function(w){return w.charAt(0).toUpperCase()+"."}).join(" ")}
+
+/* ===== Reloj ===== */
+function reloj(){var d=coAhora();$("#reloj").querySelector("b").textContent=fmtHora(d);$("#fechaHoy").textContent=DIAS_C[d.getDay()]+" "+p2(d.getDate())+"/"+p2(d.getMonth()+1)+"/"+d.getFullYear()}
+reloj();setInterval(reloj,20000);
+
+/* ===== Pestañas ===== */
+$$(".pes").forEach(function(b){b.addEventListener("click",function(){
+  $$(".pes").forEach(function(x){x.setAttribute("aria-selected","false")});
+  b.setAttribute("aria-selected","true");
+  $$(".vista").forEach(function(v){v.classList.remove("on")});
+  $("#v-"+b.dataset.v).classList.add("on");
+  $("#barra").style.display=(b.dataset.v==="registrar")?"":"none";
+  if(b.dataset.v==="bitacora")pintarLista();
+  if(b.dataset.v==="analisis")pintarAnalisis();
+  window.scrollTo(0,0);
+});});
+
+/* ===== Chips ===== */
+function chips(cont,lista,tipo){
+  cont.innerHTML=lista.map(function(x){return '<button type="button" class="chip" aria-pressed="false" data-v="'+esc(x)+'">'+esc(x)+'</button>'}).join("");
+  cont.addEventListener("click",function(e){
+    var b=e.target.closest(".chip");if(!b)return;
+    var v=b.dataset.v, act=b.getAttribute("aria-pressed")==="true";
+    if(tipo==="multi"){
+      b.setAttribute("aria-pressed",act?"false":"true");
+      sel.circ=Array.prototype.slice.call(cont.querySelectorAll('[aria-pressed="true"]')).map(function(x){return x.dataset.v});
+    }else{
+      Array.prototype.slice.call(cont.children).forEach(function(x){x.setAttribute("aria-pressed","false")});
+      if(!act)b.setAttribute("aria-pressed","true");
+      var val=act?"":v;
+      if(tipo==="modalidad")sel.modalidad=val;
+      if(tipo==="denuncia"){sel.denuncia=val==="Sí, con radicado"?true:(val==="Todavía no"?false:null);$("#caja-radicado").hidden=sel.denuncia!==true;}
+    }
+  });
+}
+chips($("#f-modalidad"),MODALIDADES,"modalidad");
+chips($("#f-circ"),CIRCUNSTANCIAS,"multi");
+chips($("#f-denuncia"),["Sí, con radicado","Todavía no"],"denuncia");
+
+/* ===== GPS ===== */
+$("#btn-gps").addEventListener("click",function(){
+  if(!navigator.geolocation){aviso("Este teléfono no permite ubicación.");return}
+  $("#gps-txt").textContent="Buscando…";
+  navigator.geolocation.getCurrentPosition(function(p){
+    gps={lat:+p.coords.latitude.toFixed(6),lng:+p.coords.longitude.toFixed(6)};
+    $("#gps-txt").textContent=gps.lat+", "+gps.lng;
+    aviso("Ubicación adjuntada.");
+  },function(){$("#gps-txt").textContent="";aviso("No se pudo obtener la ubicación. Escriba el punto a mano.")},{enableHighAccuracy:true,timeout:9000});
+});
+
+/* ===== Guardar ===== */
+function limpiar(){
+  $("#f-fecha").value=paraInput(coAhora());
+  ["#f-punto","#f-desc","#f-elementos","#f-valor","#f-radicado","#f-nombre","#f-tel"].forEach(function(s){$(s).value=""});
+  $("#f-consent").checked=false;$("#gps-txt").textContent="";gps=null;
+  $$("#f-modalidad .chip,#f-circ .chip,#f-denuncia .chip").forEach(function(c){c.setAttribute("aria-pressed","false")});
+  sel={modalidad:"",circ:[],denuncia:null};$("#caja-radicado").hidden=true;
+}
+$("#btn-limpiar").addEventListener("click",function(){limpiar();aviso("Formulario en blanco.")});
+
+$("#btn-guardar").addEventListener("click",function(){
+  var f=$("#f-fecha").value, punto=$("#f-punto").value.trim();
+  if(!f){aviso("Falta la fecha y hora del hecho.");$("#f-fecha").focus();return}
+  if(!sel.modalidad){aviso("Escoja una modalidad.");return}
+  if(!punto){aviso("Escriba el punto exacto donde ocurrió.");$("#f-punto").focus();return}
+  var nom=$("#f-nombre").value.trim(), tel=$("#f-tel").value.trim();
+  if((nom||tel)&&!$("#f-consent").checked){aviso("Marque la autorización de tratamiento de datos.");return}
+  datos.push({
+    id:Date.now()+"-"+Math.random().toString(36).slice(2,7),
+    fecha:f, modalidad:sel.modalidad, punto:punto,
+    desc:$("#f-desc").value.trim(), elementos:$("#f-elementos").value.trim(),
+    valor:parseInt($("#f-valor").value,10)||0, circ:sel.circ.slice(),
+    denunciado:sel.denuncia===true, radicado:$("#f-radicado").value.trim(),
+    nombre:nom, tel:tel, gps:gps, creado:paraInput(coAhora())
+  });
+  guardar();limpiar();datalistPuntos();
+  aviso("Incidente guardado. Van "+datos.length+" en la bitácora.");
+});
+
+function datalistPuntos(){
+  var u={};datos.forEach(function(d){u[d.punto]=1});
+  $("#puntos").innerHTML=Object.keys(u).map(function(p){return '<option value="'+esc(p)+'">'}).join("");
+  var s=$("#q-modo"), v=s.value;
+  s.innerHTML='<option value="">Toda modalidad</option>'+MODALIDADES.map(function(m){return '<option>'+esc(m)+'</option>'}).join("");
+  s.value=v;
+}
+
+/* ===== Bitácora ===== */
+function filtrados(){
+  var q=$("#q-texto").value.toLowerCase().trim(), m=$("#q-modo").value, d=$("#q-den").value;
+  return datos.filter(function(x){
+    if(m&&x.modalidad!==m)return false;
+    if(d==="si"&&!x.denunciado)return false;
+    if(d==="no"&&x.denunciado)return false;
+    if(q&&((x.punto||"")+" "+(x.desc||"")+" "+(x.elementos||"")).toLowerCase().indexOf(q)<0)return false;
+    return true;
+  }).sort(function(a,b){return a.fecha<b.fecha?1:-1});
+}
+function pintarLista(){
+  datalistPuntos();
+  var arr=filtrados();
+  $("#conteo-filtro").textContent=arr.length+" de "+datos.length+" registros";
+  if(!datos.length){
+    $("#lista").innerHTML='<div class="hoja vacio"><p>La bitácora está vacía.<br>El primer registro es el que empieza a construir el argumento.</p><button class="btn" type="button" onclick="document.querySelector(\'.pes\').click()">Registrar el primero</button></div>';
+    return;
+  }
+  if(!arr.length){$("#lista").innerHTML='<div class="hoja vacio"><p>Ningún registro coincide con el filtro.</p></div>';return}
+  $("#lista").innerHTML=arr.map(function(x){
+    var d=desdeInput(x.fecha);
+    var contacto=(x.nombre||x.tel)?('<span class="dato">Reporta: '+esc(mNom(x.nombre))+" · "+esc(mTel(x.tel))+"</span>"):'<span class="dato">Reporte anónimo</span>';
+    return '<article class="reg '+(x.denunciado?"den":"sin")+'">'+
+      '<div class="cab"><div>'+
+        '<div class="cuando">'+esc(d?DIAS_C[d.getDay()]+" "+p2(d.getDate())+"/"+p2(d.getMonth()+1)+"/"+d.getFullYear()+" · "+fmtHora(d):x.fecha)+'</div>'+
+        '<div class="modo">'+esc(x.modalidad)+'</div>'+
+        '<div class="donde">'+esc(x.punto)+'</div>'+
+      '</div>'+(x.valor?'<div class="dato">'+pesos(x.valor)+'</div>':'')+'</div>'+
+      (x.desc?'<p class="desc">'+esc(x.desc)+'</p>':'')+
+      (x.elementos?'<p class="dato" style="margin-top:6px">Se llevaron: '+esc(x.elementos)+'</p>':'')+
+      (x.circ&&x.circ.length?'<p class="dato" style="margin-top:4px">'+esc(x.circ.join(" · "))+'</p>':'')+
+      '<div class="pie">'+
+        (x.denunciado?'<span class="estampa">Radicado '+esc(x.radicado||"registrado")+'</span>':'<span class="estampa falta">Sin denuncia</span>')+
+        contacto+
+      '</div>'+
+      (admin?'<div class="fila-btn" style="margin-top:10px"><button class="btn sec mini" data-del="'+esc(x.id)+'" type="button">Eliminar</button></div>':'')+
+    '</article>';
+  }).join("");
+}
+["#q-texto","#q-modo","#q-den"].forEach(function(s){$(s).addEventListener("input",pintarLista)});
+$("#lista").addEventListener("click",function(e){
+  var b=e.target.closest("[data-del]");if(!b)return;
+  if(!admin){aviso("Solo el administrador puede eliminar.");return}
+  if(!confirm("¿Eliminar este registro de forma permanente?"))return;
+  datos=datos.filter(function(x){return x.id!==b.dataset.del});guardar();pintarLista();aviso("Registro eliminado.");
+});
+
+/* ===== Análisis ===== */
+function pintarAnalisis(){
+  var n=datos.length;
+  $("#k-total").textContent=n;
+  var lim=coAhora();lim.setDate(lim.getDate()-30);
+  var rec=datos.filter(function(x){var d=desdeInput(x.fecha);return d&&d>=lim});
+  $("#k-30").textContent=rec.length;
+  var sin=datos.filter(function(x){return !x.denunciado}).length;
+  $("#k-sin").textContent=(n?Math.round(sin/n*100):0)+"%";
+  var tot=datos.reduce(function(a,x){return a+(x.valor||0)},0);
+  $("#k-valor").textContent=tot>=1000000?("$"+(tot/1000000).toFixed(1)+"M"):pesos(tot);
+
+  // Rejilla 7x24
+  var g=[],i,j;for(i=0;i<7;i++){g[i]=[];for(j=0;j<24;j++)g[i][j]=0}
+  var max=0;
+  datos.forEach(function(x){var d=desdeInput(x.fecha);if(!d)return;g[d.getDay()][d.getHours()]++;if(g[d.getDay()][d.getHours()]>max)max=g[d.getDay()][d.getHours()]});
+  var h='<table><tr><th></th>';
+  for(j=0;j<24;j++)h+='<th>'+(j%3===0?p2(j):"")+'</th>';
+  h+='</tr>';
+  for(i=0;i<7;i++){
+    h+='<tr><th class="dia">'+DIAS_C[i]+'</th>';
+    for(j=0;j<24;j++){
+      var v=g[i][j], a=max?v/max:0, bg=v?"rgba(107,45,140,"+(0.18+a*0.82).toFixed(2)+")":"#fff";
+      h+='<td><div class="celda'+(v&&v===max?" pico":"")+'" '+(v?'data-n="1"':'')+' style="background:'+bg+'" title="'+DIAS[i]+" "+p2(j)+':00 — '+v+' hecho(s)"></div></td>';
+    }
+    h+='</tr>';
+  }
+  $("#rejilla").innerHTML=h+'</table>';
+
+  // Hallazgo en lenguaje llano
+  if(n<5){
+    $("#hallazgo").textContent="Con "+n+" registro(s) todavía no se puede afirmar un patrón. A partir de 15 hechos el mapa empieza a ser confiable.";
+  }else{
+    var franjas=[[0,6,"de la madrugada (12 a. m. – 6 a. m.)"],[6,12,"de la mañana (6 a. m. – 12 m.)"],[12,18,"de la tarde (12 m. – 6 p. m.)"],[18,24,"de la noche (6 p. m. – 12 a. m.)"]];
+    var mejorF=null,mejorC=-1;
+    franjas.forEach(function(f){var c=0;datos.forEach(function(x){var d=desdeInput(x.fecha);if(d&&d.getHours()>=f[0]&&d.getHours()<f[1])c++});if(c>mejorC){mejorC=c;mejorF=f}});
+    var pd=[0,0,0,0,0,0,0];datos.forEach(function(x){var d=desdeInput(x.fecha);if(d)pd[d.getDay()]++});
+    var mejorD=0;for(i=1;i<7;i++)if(pd[i]>pd[mejorD])mejorD=i;
+    $("#hallazgo").innerHTML="El <b>"+Math.round(mejorC/n*100)+"%</b> de los hechos ocurre en la franja "+esc(mejorF[2])+", y el día más golpeado es el <b>"+DIAS[mejorD]+"</b>. Esa es la franja que hay que exigir en el patrullaje del cuadrante.";
+  }
+
+  rank("#rank-puntos",contar("punto"),"Sin puntos registrados todavía.");
+  rank("#rank-modos",contar("modalidad"),"Sin modalidades registradas todavía.");
+}
+function contar(campo){
+  var m={};datos.forEach(function(x){var k=x[campo]||"—";m[k]=(m[k]||0)+1});
+  return Object.keys(m).map(function(k){return[k,m[k]]}).sort(function(a,b){return b[1]-a[1]}).slice(0,7);
+}
+function rank(sel_,arr,vacio){
+  var el=$(sel_);
+  if(!arr.length){el.innerHTML='<li><span class="nom" style="color:var(--tinta-45)">'+vacio+'</span></li>';return}
+  var mx=arr[0][1];
+  el.innerHTML=arr.map(function(x,i){
+    return '<li><span class="pos">'+p2(i+1)+'</span><span class="nom">'+esc(x[0])+'</span>'+
+      '<span class="bar"><i style="width:'+Math.round(x[1]/mx*100)+'%"></i></span>'+
+      '<span class="val">'+x[1]+'</span></li>';
+  }).join("");
+}
+
+/* ===== Informe ===== */
+$("#btn-armar").addEventListener("click",armarInforme);
+$("#btn-pdf").addEventListener("click",function(){
+  if($("#salida-informe").hidden)armarInforme();
+  setTimeout(function(){window.print()},220);
+});
+function armarInforme(){
+  var d1=desdeInput($("#i-desde").value), d2=desdeInput($("#i-hasta").value);
+  var arr=datos.filter(function(x){var d=desdeInput(x.fecha);if(!d)return false;if(d1&&d<d1)return false;if(d2&&d>d2)return false;return true})
+               .sort(function(a,b){return a.fecha<b.fecha?-1:1});
+  if(!arr.length){aviso("No hay incidentes en ese rango de fechas.");return}
+  var incl=admin&&$("#i-sensible").checked;
+  var hoy=coAhora();
+  var tot=arr.reduce(function(a,x){return a+(x.valor||0)},0);
+  var den=arr.filter(function(x){return x.denunciado}).length;
+
+  var pts={};arr.forEach(function(x){pts[x.punto]=(pts[x.punto]||0)+1});
+  var top=Object.keys(pts).map(function(k){return[k,pts[k]]}).sort(function(a,b){return b[1]-a[1]}).slice(0,5);
+
+  var h='';
+  h+='<div style="border-bottom:2px solid var(--tinta);padding-bottom:10px;margin-bottom:16px">';
+  h+='<div style="font-family:var(--f-dat);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--tinta-45)">Comité de Seguridad y Convivencia</div>';
+  h+='<div style="font-family:var(--f-tit);font-weight:800;font-size:21px;margin-top:4px">Informe de incidentes de seguridad</div>';
+  h+='<div style="font-size:13.5px;color:var(--tinta-70);margin-top:3px">Barrio Colinas del Portal · Caucasia, Antioquia</div></div>';
+
+  h+='<p style="font-size:13.5px;line-height:1.55">Señores <b>Policía Nacional — Estación de Caucasia</b>. En calidad de comunidad organizada del barrio Colinas del Portal presentamos la relación de <b>'+arr.length+' hecho(s)</b> de inseguridad documentados'+
+     (d1?' desde el '+fmtLargo(d1):'')+(d2?' hasta el '+fmtLargo(d2):'')+
+     ', con el fin de solicitar refuerzo de patrullaje en las franjas y puntos que se detallan a continuación.</p>';
+
+  h+='<h3>1. Resumen</h3><table class="datos">'+
+     '<tr><th>Hechos documentados</th><td>'+arr.length+'</td></tr>'+
+     '<tr><th>Con denuncia formal</th><td>'+den+' ('+Math.round(den/arr.length*100)+'%)</td></tr>'+
+     '<tr><th>Sin denuncia formal</th><td>'+(arr.length-den)+'</td></tr>'+
+     '<tr><th>Pérdida económica reportada</th><td>'+pesos(tot)+'</td></tr>'+
+     '</table>';
+
+  h+='<h3>2. Puntos de mayor concentración</h3><table class="datos"><tr><th>Punto</th><th>Hechos</th></tr>'+
+     top.map(function(x){return '<tr><td>'+esc(x[0])+'</td><td>'+x[1]+'</td></tr>'}).join("")+'</table>';
+
+  var fr=[[0,6,"12 a. m. – 6 a. m."],[6,12,"6 a. m. – 12 m."],[12,18,"12 m. – 6 p. m."],[18,24,"6 p. m. – 12 a. m."]];
+  h+='<h3>3. Distribución horaria</h3><table class="datos"><tr><th>Franja</th><th>Hechos</th><th>Participación</th></tr>';
+  fr.forEach(function(f){var c=0;arr.forEach(function(x){var d=desdeInput(x.fecha);if(d&&d.getHours()>=f[0]&&d.getHours()<f[1])c++});
+    h+='<tr><td>'+f[2]+'</td><td>'+c+'</td><td>'+Math.round(c/arr.length*100)+'%</td></tr>'});
+  h+='</table>';
+
+  h+='<h3>4. Relación detallada</h3><table class="datos"><tr><th>#</th><th>Fecha y hora</th><th>Modalidad</th><th>Punto</th><th>Radicado</th>'+(incl?'<th>Contacto</th>':'')+'</tr>';
+  arr.forEach(function(x,i){var d=desdeInput(x.fecha);
+    h+='<tr><td>'+(i+1)+'</td><td>'+esc(d?p2(d.getDate())+"/"+p2(d.getMonth()+1)+"/"+d.getFullYear()+" "+fmtHora(d):x.fecha)+'</td><td>'+esc(x.modalidad)+'</td><td>'+esc(x.punto)+'</td><td>'+esc(x.denunciado?(x.radicado||"Sí"):"Sin denuncia")+'</td>'+
+       (incl?'<td>'+esc(x.nombre||"—")+" "+esc(x.tel||"")+'</td>':'')+'</tr>'});
+  h+='</table>';
+
+  h+='<h3>5. Solicitud</h3><p style="font-size:13.5px;line-height:1.55">Con base en lo anterior solicitamos de manera respetuosa: (a) refuerzo de patrullaje del cuadrante en las franjas horarias señaladas; (b) visita de verificación a los puntos relacionados en el numeral 2; (c) acompañamiento para la formalización del Frente de Seguridad Local del barrio; y (d) acompañamiento para que los hechos aún no denunciados sean radicados.</p>';
+
+  if(!incl)h+='<p style="font-size:12px;color:var(--tinta-45);margin-top:16px">Los datos de contacto de las personas afectadas se reservan conforme a la Ley 1581 de 2012 y quedan a disposición de la autoridad que los requiera formalmente.</p>';
+
+  h+='<div class="firma">'+esc($("#i-firma").value||"__________________________")+'<br><span style="color:var(--tinta-45)">Colinas del Portal · '+fmtLargo(hoy)+'</span></div>';
+  h+='<p style="text-align:center;font-family:var(--f-dat);font-size:10px;color:var(--tinta-45);margin-top:26px;letter-spacing:.05em">Desarrollada por Vibras Positivas HM — Derechos de Autor Reservados</p>';
+
+  var s=$("#salida-informe");s.innerHTML=h;s.hidden=false;
+  s.scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+/* ===== Administrador ===== */
+function estadoAdmin(){
+  $("#estado-admin").textContent=admin?"Modo administrador activo. Los datos de contacto se muestran completos.":"Modo vecino. Los datos de contacto aparecen enmascarados.";
+  $("#caja-login").hidden=admin;$("#caja-admin").hidden=!admin;
+  $("#i-sensible").disabled=!admin;if(!admin)$("#i-sensible").checked=false;
+}
+$("#btn-entrar").addEventListener("click",function(){
+  if($("#a-pin").value===pin()){admin=true;$("#a-pin").value="";estadoAdmin();pintarLista();aviso("Modo administrador activo.")}
+  else aviso("Clave incorrecta.");
+});
+$("#btn-salir").addEventListener("click",function(){admin=false;estadoAdmin();pintarLista();aviso("Salió del modo administrador.")});
+$("#btn-cambiar").addEventListener("click",function(){
+  var v=$("#a-nuevo").value.trim();
+  if(v.length<4){aviso("La clave debe tener mínimo 4 caracteres.");return}
+  Store.set(LLAVE_PIN,v);$("#a-nuevo").value="";aviso("Clave actualizada.");
+});
+
+/* ===== Respaldo ===== */
+function bajar(txt,nom,tipo){
+  var b=new Blob([txt],{type:tipo}),u=URL.createObjectURL(b),a=document.createElement("a");
+  a.href=u;a.download=nom;document.body.appendChild(a);a.click();document.body.removeChild(a);setTimeout(function(){URL.revokeObjectURL(u)},1500);
+}
+$("#btn-json").addEventListener("click",function(){
+  if(!datos.length){aviso("No hay nada que respaldar.");return}
+  bajar(JSON.stringify({barrio:"Colinas del Portal",generado:paraInput(coAhora()),incidentes:datos},null,2),"bitacora-colinas-"+paraInput(coAhora()).replace(/[:T]/g,"-")+".json","application/json");
+});
+$("#btn-csv").addEventListener("click",function(){
+  if(!datos.length){aviso("No hay nada que exportar.");return}
+  var col=["fecha","modalidad","punto","desc","elementos","valor","circ","denunciado","radicado"];
+  if(admin)col=col.concat(["nombre","tel"]);
+  var f=function(v){return '"'+String(v==null?"":(Array.isArray(v)?v.join(" | "):v)).replace(/"/g,'""')+'"'};
+  bajar("\uFEFF"+col.join(";")+"\n"+datos.map(function(x){return col.map(function(c){return f(x[c])}).join(";")}).join("\n"),"bitacora-colinas.csv","text/csv;charset=utf-8");
+});
+$("#btn-cargar").addEventListener("click",function(){$("#file-json").click()});
+$("#file-json").addEventListener("change",function(e){
+  var f=e.target.files[0];if(!f)return;
+  var r=new FileReader();
+  r.onload=function(){
+    try{
+      var j=JSON.parse(r.result), arr=Array.isArray(j)?j:j.incidentes;
+      if(!Array.isArray(arr))throw 0;
+      var ids={};datos.forEach(function(x){ids[x.id]=1});
+      var nuevos=arr.filter(function(x){return x&&x.fecha&&!ids[x.id]});
+      datos=datos.concat(nuevos);guardar();pintarLista();datalistPuntos();
+      aviso("Se restauraron "+nuevos.length+" registro(s).");
+    }catch(err){aviso("El archivo no tiene el formato del respaldo.")}
+    e.target.value="";
+  };
+  r.readAsText(f);
+});
+$("#btn-borrar").addEventListener("click",function(){
+  if(!admin){aviso("Solo el administrador puede borrar todo.");return}
+  if(!confirm("Se borrarán TODOS los registros de este dispositivo y no se pueden recuperar. ¿Descargó el respaldo?"))return;
+  datos=[];guardar();pintarLista();pintarAnalisis();aviso("Bitácora vacía.");
+});
+
+/* ===== Manifiesto PWA ===== */
+(function(){
+  var icono=function(px){
+    var c=document.createElement("canvas");c.width=c.height=px;var x=c.getContext("2d");
+    x.fillStyle="#14202B";x.fillRect(0,0,px,px);
+    x.fillStyle="#6B2D8C";x.fillRect(0,px*0.82,px,px*0.18);
+    x.fillStyle="#F4F5F1";x.font="800 "+px*0.46+"px Archivo, sans-serif";
+    x.textAlign="center";x.textBaseline="middle";x.fillText("CP",px/2,px*0.44);
+    return c.toDataURL("image/png");
+  };
+  var man={
+    name:"Bitácora de Seguridad — Colinas del Portal",
+    short_name:"Bitácora Barrio",
+    description:"Registro comunitario de incidentes de seguridad del barrio Colinas del Portal, Caucasia.",
+    start_url:".",scope:".",display:"standalone",orientation:"portrait",
+    background_color:"#E4E6E0",theme_color:"#14202B",lang:"es-CO",
+    icons:[{src:icono(192),sizes:"192x192",type:"image/png",purpose:"any maskable"},
+           {src:icono(512),sizes:"512x512",type:"image/png",purpose:"any maskable"}]
+  };
+  var l=document.createElement("link");l.rel="manifest";
+  l.href=URL.createObjectURL(new Blob([JSON.stringify(man)],{type:"application/manifest+json"}));
+  document.head.appendChild(l);
+  var a=document.createElement("link");a.rel="apple-touch-icon";a.href=icono(180);document.head.appendChild(a);
+})();
+if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})})}
+
+/* ===== Arranque ===== */
+cargar();limpiar();datalistPuntos();estadoAdmin();
+var hoy=coAhora(), atras=new Date(hoy.getTime());atras.setDate(atras.getDate()-90);
+$("#i-desde").value=paraInput(atras);$("#i-hasta").value=paraInput(hoy);
+pintarLista();pintarAnalisis();
+})();
+</script>
+</body>
+</html>
